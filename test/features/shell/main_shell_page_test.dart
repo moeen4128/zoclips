@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:zoclips/core/theme/app_theme.dart';
 import 'package:zoclips/core/widgets/app_bottom_nav_bar.dart';
 import 'package:zoclips/core/widgets/app_navigation_rail.dart';
 import 'package:zoclips/features/assets/presentation/pages/assets_page.dart';
@@ -45,7 +46,9 @@ Future<void> _pumpAtSize(WidgetTester tester, Size size) async {
   addTearDown(tester.view.resetPhysicalSize);
   addTearDown(tester.view.resetDevicePixelRatio);
 
-  await tester.pumpWidget(MaterialApp.router(routerConfig: _buildTestRouter()));
+  await tester.pumpWidget(
+    MaterialApp.router(theme: AppTheme.darkTheme, routerConfig: _buildTestRouter()),
+  );
   await tester.pumpAndSettle();
 }
 

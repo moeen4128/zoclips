@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../constants/app_sizes.dart';
 import '../theme/app_colors.dart';
+import '../theme/app_neutral_colors.dart';
 import '../theme/app_text_styles.dart';
 
 enum SnackType { success, error, info }
@@ -17,7 +18,8 @@ class AppSnackbar {
     final messenger = ScaffoldMessenger.of(context);
     messenger.hideCurrentSnackBar();
 
-    final config = _configFor(type);
+    final neutrals = context.neutrals;
+    final config = _configFor(type, neutrals);
 
     messenger.showSnackBar(
       SnackBar(
@@ -36,7 +38,7 @@ class AppSnackbar {
             vertical: AppSizes.md,
           ),
           decoration: BoxDecoration(
-            color: AppColors.cardBackground,
+            color: neutrals.cardBackground,
             borderRadius: BorderRadius.circular(AppSizes.radiusMd),
             border: Border.all(color: config.borderColor),
           ),
@@ -44,7 +46,9 @@ class AppSnackbar {
             children: [
               Icon(config.icon, color: config.iconColor, size: AppSizes.iconMd),
               const SizedBox(width: AppSizes.sm),
-              Expanded(child: Text(message, style: AppTextStyles.inputText)),
+              Expanded(
+                child: Text(message, style: AppTextStyles.inputText(neutrals)),
+              ),
             ],
           ),
         ),
@@ -61,7 +65,7 @@ class AppSnackbar {
   static void info(BuildContext context, String message) =>
       show(context, message: message, type: SnackType.info);
 
-  static _SnackConfig _configFor(SnackType type) {
+  static _SnackConfig _configFor(SnackType type, AppNeutralColors neutrals) {
     switch (type) {
       case SnackType.success:
         return _SnackConfig(
@@ -79,7 +83,7 @@ class AppSnackbar {
         return _SnackConfig(
           icon: Icons.info_outline,
           iconColor: AppColors.accentGreen,
-          borderColor: AppColors.cardBorder,
+          borderColor: neutrals.cardBorder,
         );
     }
   }

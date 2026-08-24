@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_sizes.dart';
+import '../../../../core/theme/app_neutral_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/responsive_page.dart';
 
@@ -8,15 +9,16 @@ class AssetsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final neutrals = context.neutrals;
     return ResponsivePage(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Assets', style: AppTextStyles.heading),
+          Text('Assets', style: AppTextStyles.heading(neutrals)),
           const SizedBox(height: AppSizes.sm),
-          const Text(
+          Text(
             'Uploaded videos/clips will list here.',
-            style: AppTextStyles.subtitle,
+            style: AppTextStyles.subtitle(neutrals),
           ),
         ],
       ),

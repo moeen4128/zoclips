@@ -3,6 +3,23 @@ class AppStrings {
 
   static const String appName = 'Zoclips';
 
+  // Onboarding
+  static const String onboardingSkip = 'Skip';
+  static const String onboardingNext = 'Next';
+  static const String onboardingGetStarted = 'Get Started';
+  static const String onboardingTitle1 = 'Turn any video into clips';
+  static const String onboardingBody1 =
+      'Paste a link, upload a file, or import straight from Google Drive — zoclips handles the rest.';
+  static const String onboardingTitle2 = 'AI finds your best moments';
+  static const String onboardingBody2 =
+      'No more scrubbing through hours of footage. Our AI spots the engaging moments and cuts them for you.';
+  static const String onboardingTitle3 = 'Captions and B-roll, done for you';
+  static const String onboardingBody3 =
+      'Every clip comes back captioned and layered with B-roll — polished and ready to post.';
+  static const String onboardingTitle4 = 'Publish everywhere, from one place';
+  static const String onboardingBody4 =
+      'Schedule and publish across every platform without leaving zoclips.';
+
   // Sign in
   static const String welcomeBack = 'Welcome back';
   static const String signInSubtitle = 'Sign in to continue editing your clips';

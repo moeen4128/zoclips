@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_sizes.dart';
+import '../../../../core/router/route_names.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_neutral_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
+import '../../../../core/theme/theme_controller.dart';
 import '../../../../core/utils/responsive.dart';
 import '../../../../injection_container.dart';
+import '../../../auth/data/datasources/auth_local_datasource.dart';
 import '../../../profile/presentation/cubit/profile_cubit.dart';
 import '../../../profile/presentation/cubit/profile_state.dart';
 import '../../../profile/presentation/widgets/profile_menu_row.dart';
@@ -29,19 +34,24 @@ class _SettingsView extends StatefulWidget {
 }
 
 class _SettingsViewState extends State<_SettingsView> {
+  bool _isLoggingOut = false;
+
   @override
   Widget build(BuildContext context) {
     final horizontalPadding = context.pageHorizontalPadding;
+    final neutrals = context.neutrals;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: neutrals.background,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        iconTheme: const IconThemeData(color: AppColors.textPrimary),
+        iconTheme: IconThemeData(color: neutrals.textPrimary),
         title: Text(
           'Settings',
-          style: AppTextStyles.heading.copyWith(fontSize: AppSizes.fontLg),
+          style: AppTextStyles.heading(
+            neutrals,
+          ).copyWith(fontSize: AppSizes.fontLg),
         ),
       ),
       body: SafeArea(
@@ -60,7 +70,7 @@ class _SettingsViewState extends State<_SettingsView> {
                   padding: const EdgeInsets.all(AppSizes.lg),
                   child: Text(
                     state.errorMessage ?? 'Could not load settings',
-                    style: AppTextStyles.subtitle,
+                    style: AppTextStyles.subtitle(neutrals),
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -162,21 +172,23 @@ class _SettingsViewState extends State<_SettingsView> {
                                 children: [
                                   Text(
                                     displayName,
-                                    style: AppTextStyles.inputText.copyWith(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: AppSizes.fontLg,
-                                    ),
+                                    style: AppTextStyles.inputText(neutrals)
+                                        .copyWith(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: AppSizes.fontLg,
+                                        ),
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                   const SizedBox(height: 2),
                                   Text(
                                     user.email,
-                                    style: AppTextStyles.subtitle.copyWith(
-                                      color: Colors.black.withValues(
-                                        alpha: 0.7,
-                                      ),
-                                    ),
+                                    style: AppTextStyles.subtitle(neutrals)
+                                        .copyWith(
+                                          color: Colors.black.withValues(
+                                            alpha: 0.7,
+                                          ),
+                                        ),
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ],
@@ -202,10 +214,11 @@ class _SettingsViewState extends State<_SettingsView> {
                                   const SizedBox(width: 4),
                                   Text(
                                     'Edit',
-                                    style: AppTextStyles.subtitle.copyWith(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w600,
-                                    ),
+                                    style: AppTextStyles.subtitle(neutrals)
+                                        .copyWith(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.w600,
+                                        ),
                                   ),
                                 ],
                               ),
@@ -213,6 +226,12 @@ class _SettingsViewState extends State<_SettingsView> {
                           ],
                         ),
                       ),
+                      const SizedBox(height: AppSizes.xl),
+
+                      // Appearance — light/dark/system theme switch
+                      const _SectionTitle(title: 'Appearance'),
+                      const SizedBox(height: AppSizes.sm),
+                      const _ThemeModeSwitcher(),
                       const SizedBox(height: AppSizes.xl),
 
                       // Account Setting
@@ -313,6 +332,14 @@ class _SettingsViewState extends State<_SettingsView> {
                           ),
                         ],
                       ),
+                      const SizedBox(height: AppSizes.xl),
+
+                      // Logout
+                      _LogoutButton(
+                        onTap: _isLoggingOut
+                            ? null
+                            : () => _confirmLogout(context),
+                      ),
                     ],
                   ),
                 ),
@@ -322,6 +349,46 @@ class _SettingsViewState extends State<_SettingsView> {
         ),
       ),
     );
+  }
+
+  Future<void> _confirmLogout(BuildContext context) async {
+    setState(() => _isLoggingOut = true);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Log out'),
+        content: const Text('Are you sure you want to log out?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: const Text(
+              'Log out',
+              style: TextStyle(color: AppColors.error),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true) {
+      if (mounted) setState(() => _isLoggingOut = false);
+      return;
+    }
+
+    await sl<AuthLocalDataSource>().clearSession();
+    if (!context.mounted) return;
+
+    // Settings is pushed on top of the bottom-nav shell — pop back to the
+    // shell root first so GoRouter doesn't have to tear down the pushed
+    // page and the StatefulShellRoute in the same transition (that combo
+    // trips a Flutter element-tree assertion when redirecting to sign-in).
+    Navigator.of(context).popUntil((route) => route.isFirst);
+    if (!context.mounted) return;
+    context.goNamed(RouteNames.signIn);
   }
 }
 
@@ -336,9 +403,97 @@ class _SectionTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       title.toUpperCase(),
-      style: AppTextStyles.subtitle.copyWith(
-        fontWeight: FontWeight.w600,
-        letterSpacing: 0.5,
+      style: AppTextStyles.subtitle(
+        context.neutrals,
+      ).copyWith(fontWeight: FontWeight.w600, letterSpacing: 0.5),
+    );
+  }
+}
+
+class _ThemeModeSwitcher extends StatelessWidget {
+  const _ThemeModeSwitcher();
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: sl<ThemeController>(),
+      builder: (context, mode, _) {
+        return SegmentedButton<ThemeMode>(
+          segments: const [
+            ButtonSegment(
+              value: ThemeMode.system,
+              label: Text('System'),
+              icon: Icon(Icons.brightness_auto_outlined),
+            ),
+            ButtonSegment(
+              value: ThemeMode.light,
+              label: Text('Light'),
+              icon: Icon(Icons.light_mode_outlined),
+            ),
+            ButtonSegment(
+              value: ThemeMode.dark,
+              label: Text('Dark'),
+              icon: Icon(Icons.dark_mode_outlined),
+            ),
+          ],
+          selected: {mode},
+          showSelectedIcon: false,
+          onSelectionChanged: (selection) =>
+              sl<ThemeController>().setThemeMode(selection.first),
+        );
+      },
+    );
+  }
+}
+
+class _LogoutButton extends StatelessWidget {
+  const _LogoutButton({required this.onTap});
+
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final isLoading = onTap == null;
+    return Material(
+      color: Colors.transparent,
+      borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: AppSizes.md),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+            border: Border.all(color: AppColors.error.withValues(alpha: 0.4)),
+          ),
+          child: isLoading
+              ? const SizedBox(
+                  height: AppSizes.iconMd,
+                  width: AppSizes.iconMd,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2.2,
+                    color: AppColors.error,
+                  ),
+                )
+              : const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.logout,
+                      size: AppSizes.iconMd,
+                      color: AppColors.error,
+                    ),
+                    SizedBox(width: AppSizes.sm),
+                    Text(
+                      'Log out',
+                      style: TextStyle(
+                        color: AppColors.error,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+        ),
       ),
     );
   }

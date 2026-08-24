@@ -24,11 +24,7 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
   final FlutterSecureStorage _storage;
 
   AuthLocalDataSourceImpl({FlutterSecureStorage? storage})
-    : _storage =
-          storage ??
-          const FlutterSecureStorage(
-            aOptions: AndroidOptions(encryptedSharedPreferences: true),
-          );
+    : _storage = storage ?? const FlutterSecureStorage();
 
   @override
   Future<void> cacheSession({

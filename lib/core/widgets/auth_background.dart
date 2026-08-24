@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import '../constants/app_sizes.dart';
 import '../theme/app_colors.dart';
+import '../theme/app_neutral_colors.dart';
 
-/// Full-bleed black background with the top/bottom green radial glow seen in
+/// Full-bleed background with the top/bottom green radial glow seen in
 /// every auth screen, plus a centered, width-capped, scrollable card so it
 /// stays correct on tablets/large screens and when the keyboard opens.
 class AuthBackground extends StatelessWidget {
@@ -12,7 +13,7 @@ class AuthBackground extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: context.neutrals.background,
       body: Stack(
         fit: StackFit.expand,
         children: [
@@ -55,6 +56,7 @@ class _GlowLayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final opacity = context.neutrals.glowOpacity;
     return IgnorePointer(
       child: Align(
         alignment: alignment,
@@ -63,7 +65,7 @@ class _GlowLayer extends StatelessWidget {
           decoration: BoxDecoration(
             gradient: RadialGradient(
               colors: [
-                AppColors.glowGreen.withValues(alpha: 0.35),
+                AppColors.glowGreen.withValues(alpha: opacity),
                 AppColors.glowGreen.withValues(alpha: 0.0),
               ],
               radius: 0.8,

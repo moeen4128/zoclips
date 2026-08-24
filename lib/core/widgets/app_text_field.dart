@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../constants/app_sizes.dart';
-import '../theme/app_colors.dart';
+import '../theme/app_neutral_colors.dart';
 import '../theme/app_text_styles.dart';
 
 class AppTextField extends StatefulWidget {
@@ -34,13 +34,14 @@ class _AppTextFieldState extends State<AppTextField> {
 
   @override
   Widget build(BuildContext context) {
+    final neutrals = context.neutrals;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(widget.label, style: AppTextStyles.label),
+            Text(widget.label, style: AppTextStyles.label(neutrals)),
             if (widget.trailingLink != null) widget.trailingLink!,
           ],
         ),
@@ -49,7 +50,7 @@ class _AppTextFieldState extends State<AppTextField> {
           controller: widget.controller,
           obscureText: widget.isPassword && _obscure,
           keyboardType: widget.keyboardType,
-          style: AppTextStyles.inputText,
+          style: AppTextStyles.inputText(neutrals),
           validator: widget.validator,
           decoration: InputDecoration(
             hintText: widget.hint,
@@ -59,7 +60,7 @@ class _AppTextFieldState extends State<AppTextField> {
                       _obscure
                           ? Icons.visibility_off_outlined
                           : Icons.visibility_outlined,
-                      color: AppColors.textSecondary,
+                      color: neutrals.textSecondary,
                       size: AppSizes.iconMd,
                     ),
                     onPressed: () => setState(() => _obscure = !_obscure),
@@ -67,7 +68,7 @@ class _AppTextFieldState extends State<AppTextField> {
                 : (widget.prefixIcon != null
                       ? Icon(
                           widget.prefixIcon,
-                          color: AppColors.textSecondary,
+                          color: neutrals.textSecondary,
                           size: AppSizes.iconMd,
                         )
                       : null),

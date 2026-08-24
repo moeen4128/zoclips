@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../constants/app_sizes.dart';
 import '../theme/app_colors.dart';
+import '../theme/app_neutral_colors.dart';
 import 'app_bottom_nav_bar.dart';
 
 /// Side navigation for tablet/foldable/iPad-width screens — same
@@ -20,10 +21,11 @@ class AppNavigationRail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final neutrals = context.neutrals;
     return Container(
-      decoration: const BoxDecoration(
-        color: AppColors.cardBackground,
-        border: Border(right: BorderSide(color: AppColors.cardBorder)),
+      decoration: BoxDecoration(
+        color: neutrals.cardBackground,
+        border: Border(right: BorderSide(color: neutrals.cardBorder)),
       ),
       child: SafeArea(
         child: NavigationRail(
@@ -41,12 +43,8 @@ class AppNavigationRail extends StatelessWidget {
             color: AppColors.accentGreen,
             fontWeight: FontWeight.w600,
           ),
-          unselectedIconTheme: const IconThemeData(
-            color: AppColors.textSecondary,
-          ),
-          unselectedLabelTextStyle: const TextStyle(
-            color: AppColors.textSecondary,
-          ),
+          unselectedIconTheme: IconThemeData(color: neutrals.textSecondary),
+          unselectedLabelTextStyle: TextStyle(color: neutrals.textSecondary),
           leading: const SizedBox(height: AppSizes.lg),
           destinations: kBottomNavTabs
               .map(

@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/router/route_names.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_neutral_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/utils/validators.dart';
 import '../../../../core/widgets/app_logo_badge.dart';
@@ -61,6 +61,7 @@ class _SignInViewState extends State<_SignInView> {
 
   @override
   Widget build(BuildContext context) {
+    final neutrals = context.neutrals;
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state.status == AuthStatus.failure) {
@@ -77,9 +78,9 @@ class _SignInViewState extends State<_SignInView> {
         child: Container(
           padding: const EdgeInsets.all(AppSizes.xl),
           decoration: BoxDecoration(
-            color: AppColors.cardBackground,
+            color: neutrals.cardBackground,
             borderRadius: BorderRadius.circular(AppSizes.radiusLg),
-            border: Border.all(color: AppColors.cardBorder),
+            border: Border.all(color: neutrals.cardBorder),
           ),
           child: Form(
             key: _formKey,
@@ -89,11 +90,14 @@ class _SignInViewState extends State<_SignInView> {
               children: [
                 const AppLogoBadge(),
                 const SizedBox(height: AppSizes.lg),
-                Text(AppStrings.welcomeBack, style: AppTextStyles.heading),
+                Text(
+                  AppStrings.welcomeBack,
+                  style: AppTextStyles.heading(neutrals),
+                ),
                 const SizedBox(height: AppSizes.xs),
                 Text(
                   AppStrings.signInSubtitle,
-                  style: AppTextStyles.subtitle,
+                  style: AppTextStyles.subtitle(neutrals),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: AppSizes.xl),
@@ -146,7 +150,10 @@ class _SignInViewState extends State<_SignInView> {
                 Wrap(
                   alignment: WrapAlignment.center,
                   children: [
-                    Text(AppStrings.noAccount, style: AppTextStyles.subtitle),
+                    Text(
+                      AppStrings.noAccount,
+                      style: AppTextStyles.subtitle(neutrals),
+                    ),
                     GestureDetector(
                       onTap: () => context.pushNamed(RouteNames.signUp),
                       child: Text(
@@ -168,14 +175,15 @@ class _SignInViewState extends State<_SignInView> {
 class _OrDivider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final neutrals = context.neutrals;
     return Row(
       children: [
-        const Expanded(child: Divider(color: AppColors.divider)),
+        Expanded(child: Divider(color: neutrals.divider)),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSizes.md),
-          child: Text(AppStrings.or, style: AppTextStyles.bodyMuted),
+          child: Text(AppStrings.or, style: AppTextStyles.bodyMuted(neutrals)),
         ),
-        const Expanded(child: Divider(color: AppColors.divider)),
+        Expanded(child: Divider(color: neutrals.divider)),
       ],
     );
   }

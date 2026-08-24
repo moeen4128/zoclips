@@ -5,6 +5,7 @@ import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/router/route_names.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_neutral_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/auth_background.dart';
 import '../../../../core/widgets/gradient_button.dart';
@@ -45,6 +46,7 @@ class _EmailVerificationResultPageState
   @override
   Widget build(BuildContext context) {
     final success = widget.success;
+    final neutrals = context.neutrals;
     return AuthBackground(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -69,14 +71,14 @@ class _EmailVerificationResultPageState
             success
                 ? AppStrings.emailVerifiedTitle
                 : AppStrings.verificationFailedTitle,
-            style: AppTextStyles.heading,
+            style: AppTextStyles.heading(neutrals),
           ),
           const SizedBox(height: AppSizes.sm),
           Text(
             success
                 ? AppStrings.emailVerifiedSubtitle
                 : AppStrings.invalidOrExpiredToken,
-            style: AppTextStyles.subtitle,
+            style: AppTextStyles.subtitle(neutrals),
             textAlign: TextAlign.center,
           ),
           if (success) ...[

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/router/route_names.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_neutral_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/utils/responsive.dart';
 import '../../../../injection_container.dart';
@@ -31,19 +32,20 @@ class _ProfileSheetContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final horizontalPadding = context.pageHorizontalPadding;
+    final neutrals = context.neutrals;
 
     return Container(
       width: double.infinity,
-      decoration: const BoxDecoration(
-        color: AppColors.cardBackground,
+      decoration: BoxDecoration(
+        color: neutrals.cardBackground,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(AppSizes.radiusLg),
           topRight: Radius.circular(AppSizes.radiusLg),
         ),
         border: Border(
-          top: BorderSide(color: AppColors.cardBorder),
-          left: BorderSide(color: AppColors.cardBorder),
-          right: BorderSide(color: AppColors.cardBorder),
+          top: BorderSide(color: neutrals.cardBorder),
+          left: BorderSide(color: neutrals.cardBorder),
+          right: BorderSide(color: neutrals.cardBorder),
         ),
       ),
       child: SafeArea(
@@ -71,8 +73,8 @@ class _ProfileSheetContent extends StatelessWidget {
                       width: double.infinity,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(AppSizes.radiusLg),
-                        border: const Border(
-                          top: BorderSide(color: AppColors.cardBorder),
+                        border: Border(
+                          top: BorderSide(color: neutrals.cardBorder),
                         ),
                       ),
                       child: Column(
@@ -126,6 +128,7 @@ class _ProfileHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final neutrals = context.neutrals;
     if (state.status == ProfileStatus.loading ||
         state.status == ProfileStatus.initial) {
       return const Row(
@@ -159,7 +162,7 @@ class _ProfileHeader extends StatelessWidget {
           Expanded(
             child: Text(
               state.errorMessage ?? 'Could not load profile',
-              style: AppTextStyles.subtitle,
+              style: AppTextStyles.subtitle(neutrals),
             ),
           ),
         ],
@@ -200,7 +203,7 @@ class _ProfileHeader extends StatelessWidget {
             children: [
               Text(
                 displayName,
-                style: AppTextStyles.inputText.copyWith(
+                style: AppTextStyles.inputText(neutrals).copyWith(
                   fontWeight: FontWeight.w600,
                   fontSize: AppSizes.fontMd,
                 ),
@@ -209,7 +212,7 @@ class _ProfileHeader extends StatelessWidget {
               const SizedBox(height: 2),
               Text(
                 user.email,
-                style: AppTextStyles.subtitle,
+                style: AppTextStyles.subtitle(neutrals),
                 overflow: TextOverflow.ellipsis,
               ),
             ],
@@ -228,8 +231,8 @@ class _AvatarSkeleton extends StatelessWidget {
     return Container(
       width: 56,
       height: 56,
-      decoration: const BoxDecoration(
-        color: AppColors.inputBackground,
+      decoration: BoxDecoration(
+        color: context.neutrals.inputBackground,
         shape: BoxShape.circle,
       ),
     );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'app_colors.dart';
+import 'app_neutral_colors.dart';
 import '../constants/app_sizes.dart';
 
 class AppTextStyles {
@@ -8,35 +9,38 @@ class AppTextStyles {
   static const String fontFamily =
       'Georgia'; // headings look serif in screenshots
 
-  static const TextStyle heading = TextStyle(
+  static TextStyle heading(AppNeutralColors colors) => TextStyle(
     fontFamily: fontFamily,
     fontSize: AppSizes.fontXl,
     fontWeight: FontWeight.bold,
-    color: AppColors.textPrimary,
+    color: colors.textPrimary,
   );
 
-  static const TextStyle subtitle = TextStyle(
+  static TextStyle subtitle(AppNeutralColors colors) => TextStyle(
     fontSize: AppSizes.fontSm,
-    color: AppColors.textSecondary,
+    color: colors.textSecondary,
     height: 1.4,
   );
 
-  static const TextStyle label = TextStyle(
+  static TextStyle label(AppNeutralColors colors) => TextStyle(
     fontSize: AppSizes.fontSm,
     fontWeight: FontWeight.w500,
-    color: AppColors.textSecondary,
+    color: colors.textSecondary,
   );
 
-  static const TextStyle inputText = TextStyle(
-    fontSize: AppSizes.fontSm,
-    color: AppColors.textPrimary,
+  static TextStyle inputText(AppNeutralColors colors) =>
+      TextStyle(fontSize: AppSizes.fontSm, color: colors.textPrimary);
+
+  static TextStyle hintText(AppNeutralColors colors) =>
+      TextStyle(fontSize: AppSizes.fontSm, color: colors.textHint);
+
+  static TextStyle bodyMuted(AppNeutralColors colors) => TextStyle(
+    fontSize: AppSizes.fontXs,
+    color: colors.textSecondary,
+    height: 1.4,
   );
 
-  static const TextStyle hintText = TextStyle(
-    fontSize: AppSizes.fontSm,
-    color: AppColors.textHint,
-  );
-
+  // Brand-colored — identical in both themes, no AppNeutralColors needed.
   static const TextStyle button = TextStyle(
     fontSize: AppSizes.fontMd,
     fontWeight: FontWeight.w700,
@@ -47,11 +51,5 @@ class AppTextStyles {
     fontSize: AppSizes.fontSm,
     fontWeight: FontWeight.w600,
     color: AppColors.accentGreen,
-  );
-
-  static const TextStyle bodyMuted = TextStyle(
-    fontSize: AppSizes.fontXs,
-    color: AppColors.textSecondary,
-    height: 1.4,
   );
 }

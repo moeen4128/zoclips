@@ -6,6 +6,7 @@ import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/router/route_names.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_neutral_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/utils/validators.dart';
 import '../../../../core/widgets/app_logo_badge.dart';
@@ -62,6 +63,7 @@ class _SignUpViewState extends State<_SignUpView> {
 
   @override
   Widget build(BuildContext context) {
+    final neutrals = context.neutrals;
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state.status == AuthStatus.failure) {
@@ -81,9 +83,9 @@ class _SignUpViewState extends State<_SignUpView> {
         child: Container(
           padding: const EdgeInsets.all(AppSizes.xl),
           decoration: BoxDecoration(
-            color: AppColors.cardBackground,
+            color: neutrals.cardBackground,
             borderRadius: BorderRadius.circular(AppSizes.radiusLg),
-            border: Border.all(color: AppColors.cardBorder),
+            border: Border.all(color: neutrals.cardBorder),
           ),
           child: Form(
             key: _formKey,
@@ -92,11 +94,14 @@ class _SignUpViewState extends State<_SignUpView> {
               children: [
                 const AppLogoBadge(),
                 const SizedBox(height: AppSizes.lg),
-                Text(AppStrings.createAccount, style: AppTextStyles.heading),
+                Text(
+                  AppStrings.createAccount,
+                  style: AppTextStyles.heading(neutrals),
+                ),
                 const SizedBox(height: AppSizes.xs),
                 Text(
                   AppStrings.signUpSubtitle,
-                  style: AppTextStyles.subtitle,
+                  style: AppTextStyles.subtitle(neutrals),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: AppSizes.xl),
@@ -107,17 +112,17 @@ class _SignUpViewState extends State<_SignUpView> {
                 const SizedBox(height: AppSizes.lg),
                 Row(
                   children: [
-                    const Expanded(child: Divider(color: AppColors.divider)),
+                    Expanded(child: Divider(color: neutrals.divider)),
                     Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: AppSizes.md,
                       ),
                       child: Text(
                         AppStrings.or,
-                        style: AppTextStyles.bodyMuted,
+                        style: AppTextStyles.bodyMuted(neutrals),
                       ),
                     ),
-                    const Expanded(child: Divider(color: AppColors.divider)),
+                    Expanded(child: Divider(color: neutrals.divider)),
                   ],
                 ),
                 const SizedBox(height: AppSizes.lg),
@@ -150,22 +155,22 @@ class _SignUpViewState extends State<_SignUpView> {
                 const SizedBox(height: AppSizes.md),
                 Text.rich(
                   TextSpan(
-                    style: AppTextStyles.bodyMuted,
+                    style: AppTextStyles.bodyMuted(neutrals),
                     children: [
                       const TextSpan(text: AppStrings.termsPrefix),
                       TextSpan(
                         text: AppStrings.termsOfService,
-                        style: AppTextStyles.bodyMuted.copyWith(
-                          color: AppColors.accentGreen,
-                        ),
+                        style: AppTextStyles.bodyMuted(
+                          neutrals,
+                        ).copyWith(color: AppColors.accentGreen),
                         recognizer: TapGestureRecognizer()..onTap = () {},
                       ),
                       const TextSpan(text: AppStrings.and),
                       TextSpan(
                         text: AppStrings.privacyPolicy,
-                        style: AppTextStyles.bodyMuted.copyWith(
-                          color: AppColors.accentGreen,
-                        ),
+                        style: AppTextStyles.bodyMuted(
+                          neutrals,
+                        ).copyWith(color: AppColors.accentGreen),
                         recognizer: TapGestureRecognizer()..onTap = () {},
                       ),
                       const TextSpan(text: AppStrings.dot),
@@ -177,7 +182,10 @@ class _SignUpViewState extends State<_SignUpView> {
                 Wrap(
                   alignment: WrapAlignment.center,
                   children: [
-                    Text(AppStrings.haveAccount, style: AppTextStyles.subtitle),
+                    Text(
+                      AppStrings.haveAccount,
+                      style: AppTextStyles.subtitle(neutrals),
+                    ),
                     GestureDetector(
                       onTap: () => context.pop(),
                       child: Text(

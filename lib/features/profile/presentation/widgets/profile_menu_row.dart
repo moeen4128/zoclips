@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_neutral_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
 
 class ProfileMenuRow extends StatelessWidget {
@@ -19,6 +20,7 @@ class ProfileMenuRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final neutrals = context.neutrals;
     return Column(
       children: [
         Material(
@@ -38,11 +40,16 @@ class ProfileMenuRow extends StatelessWidget {
                     color: AppColors.accentGreen,
                   ),
                   const SizedBox(width: AppSizes.md),
-                  Expanded(child: Text(label, style: AppTextStyles.inputText)),
-                  const Icon(
+                  Expanded(
+                    child: Text(
+                      label,
+                      style: AppTextStyles.inputText(neutrals),
+                    ),
+                  ),
+                  Icon(
                     Icons.arrow_forward_ios,
                     size: 14,
-                    color: AppColors.textSecondary,
+                    color: neutrals.textSecondary,
                   ),
                 ],
               ),
@@ -50,9 +57,9 @@ class ProfileMenuRow extends StatelessWidget {
           ),
         ),
         if (showDivider)
-          const Divider(
+          Divider(
             height: 1,
-            color: AppColors.divider,
+            color: neutrals.divider,
             indent: AppSizes.lg,
             endIndent: AppSizes.lg,
           ),

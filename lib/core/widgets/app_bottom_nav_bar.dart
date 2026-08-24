@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../constants/app_sizes.dart';
 import '../theme/app_colors.dart';
+import '../theme/app_neutral_colors.dart';
 
 class NavTabData {
   final IconData icon;
@@ -45,6 +46,7 @@ class AppBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final neutrals = context.neutrals;
     return SafeArea(
       top: false,
       child: Container(
@@ -56,7 +58,7 @@ class AppBottomNavBar extends StatelessWidget {
         ),
         padding: const EdgeInsets.symmetric(vertical: AppSizes.sm),
         decoration: BoxDecoration(
-          color: AppColors.cardBackground,
+          color: neutrals.cardBackground,
           borderRadius: BorderRadius.circular(AppSizes.radiusPill),
           border: Border.all(
             color: AppColors.accentGreen.withValues(alpha: 0.5),
@@ -105,6 +107,7 @@ class _NavTabItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final neutrals = context.neutrals;
     return Expanded(
       child: Material(
         color: Colors.transparent,
@@ -129,7 +132,7 @@ class _NavTabItem extends StatelessWidget {
                   size: AppSizes.iconMd,
                   color: selected
                       ? AppColors.accentGreen
-                      : AppColors.textSecondary,
+                      : neutrals.textSecondary,
                 ),
                 const SizedBox(height: 2),
                 Text(
@@ -139,7 +142,7 @@ class _NavTabItem extends StatelessWidget {
                     fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
                     color: selected
                         ? AppColors.accentGreen
-                        : AppColors.textSecondary,
+                        : neutrals.textSecondary,
                   ),
                 ),
               ],

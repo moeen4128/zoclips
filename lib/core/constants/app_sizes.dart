@@ -21,6 +21,10 @@ class AppSizes {
   static const double buttonHeight = 52;
   static const double logoSize = 56;
 
+  // Splash — logo mark + "zoclips" wordmark reveal
+  static const double splashLogoSize = 100;
+  static const double splashWordmarkSize = 56;
+
   // Font sizes
   static const double fontXs = 12;
   static const double fontSm = 14;

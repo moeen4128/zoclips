@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_neutral_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/app_snackbar.dart';
 import '../../../../core/widgets/auth_background.dart';
@@ -30,6 +31,7 @@ class _VerifyEmailView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final neutrals = context.neutrals;
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state.status == AuthStatus.failure) {
@@ -60,17 +62,20 @@ class _VerifyEmailView extends StatelessWidget {
               ),
             ),
             const SizedBox(height: AppSizes.lg),
-            Text(AppStrings.verifyEmailTitle, style: AppTextStyles.heading),
+            Text(
+              AppStrings.verifyEmailTitle,
+              style: AppTextStyles.heading(neutrals),
+            ),
             const SizedBox(height: AppSizes.sm),
             Text.rich(
               TextSpan(
-                style: AppTextStyles.subtitle,
+                style: AppTextStyles.subtitle(neutrals),
                 children: [
                   const TextSpan(text: AppStrings.verifyEmailSubtitlePrefix),
                   TextSpan(
                     text: email,
-                    style: const TextStyle(
-                      color: AppColors.textPrimary,
+                    style: TextStyle(
+                      color: neutrals.textPrimary,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -90,7 +95,7 @@ class _VerifyEmailView extends StatelessWidget {
                           ResendVerificationSubmitted(email: email),
                         ),
                   style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: AppColors.cardBorder),
+                    side: BorderSide(color: neutrals.cardBorder),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(AppSizes.radiusPill),
                     ),
@@ -100,17 +105,17 @@ class _VerifyEmailView extends StatelessWidget {
                     ),
                   ),
                   child: loading
-                      ? const SizedBox(
+                      ? SizedBox(
                           width: 18,
                           height: 18,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            color: AppColors.textSecondary,
+                            color: neutrals.textSecondary,
                           ),
                         )
-                      : const Text(
+                      : Text(
                           AppStrings.resendEmail,
-                          style: TextStyle(color: AppColors.textPrimary),
+                          style: TextStyle(color: neutrals.textPrimary),
                         ),
                 );
               },

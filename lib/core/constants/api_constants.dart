@@ -1,9 +1,7 @@
 class ApiConstants {
   ApiConstants._();
 
-  // TODO: move to --dart-define or flutter_dotenv before release,
-  // ngrok URLs are temporary/rotate on restart.
-  static const String baseUrl = 'https://debe-14-1-106-14.ngrok-free.app';
+  static const String baseUrl = 'https://backend.zoclips.com';
   static const String apiPrefix = '/api/v1';
 
   static const int connectTimeoutMs = 15000;
@@ -21,6 +19,10 @@ class ApiConstants {
   static const String googleLogin = '$apiPrefix/auth/google_login';
   static const String googleCallback = '$apiPrefix/auth/google_callback';
   static const String me = '$apiPrefix/auth/me';
+
+  // Video endpoints
+  static const String videoMetadata = '$apiPrefix/videos/metadata';
+
   // Headers
   static const String contentType = 'application/json';
   static const String authorizationHeader = 'Authorization';

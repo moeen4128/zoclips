@@ -1,38 +1,54 @@
 import 'package:flutter/material.dart';
 import 'app_colors.dart';
+import 'app_neutral_colors.dart';
 import 'app_text_styles.dart';
 import '../constants/app_sizes.dart';
 
 class AppTheme {
   AppTheme._();
 
-  static ThemeData get darkTheme {
+  static ThemeData get darkTheme =>
+      _build(AppNeutralColors.dark, Brightness.dark);
+
+  static ThemeData get lightTheme =>
+      _build(AppNeutralColors.light, Brightness.light);
+
+  static ThemeData _build(AppNeutralColors colors, Brightness brightness) {
+    final isDark = brightness == Brightness.dark;
     return ThemeData(
       useMaterial3: true,
-      brightness: Brightness.dark,
-      scaffoldBackgroundColor: AppColors.background,
+      brightness: brightness,
+      scaffoldBackgroundColor: colors.background,
       fontFamily: AppTextStyles.fontFamily,
-      colorScheme: const ColorScheme.dark(
-        primary: AppColors.primaryGreenStart,
-        secondary: AppColors.accentGreen,
-        surface: AppColors.cardBackground,
-        error: AppColors.error,
-      ),
+      colorScheme: isDark
+          ? const ColorScheme.dark(
+              primary: AppColors.primaryGreenStart,
+              secondary: AppColors.accentGreen,
+              surface: Color(0xFF0A0A0A),
+              error: AppColors.error,
+            )
+          : ColorScheme.light(
+              primary: AppColors.primaryGreenStart,
+              secondary: AppColors.accentGreen,
+              surface: colors.cardBackground,
+              error: AppColors.error,
+            ),
+      extensions: [colors],
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: AppColors.inputBackground,
-        hintStyle: AppTextStyles.hintText,
+        fillColor: colors.inputBackground,
+        hintStyle: AppTextStyles.hintText(colors),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: AppSizes.lg,
           vertical: AppSizes.md,
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppSizes.radiusMd),
-          borderSide: const BorderSide(color: AppColors.inputBorder),
+          borderSide: BorderSide(color: colors.inputBorder),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppSizes.radiusMd),
-          borderSide: const BorderSide(color: AppColors.inputBorder),
+          borderSide: BorderSide(color: colors.inputBorder),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppSizes.radiusMd),
@@ -57,10 +73,10 @@ class AppTheme {
           textStyle: AppTextStyles.button,
         ),
       ),
-      textTheme: const TextTheme(
-        headlineSmall: AppTextStyles.heading,
-        bodyMedium: AppTextStyles.subtitle,
-        labelLarge: AppTextStyles.label,
+      textTheme: TextTheme(
+        headlineSmall: AppTextStyles.heading(colors),
+        bodyMedium: AppTextStyles.subtitle(colors),
+        labelLarge: AppTextStyles.label(colors),
       ),
     );
   }

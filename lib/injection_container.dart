@@ -1,5 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'core/network/dio_client.dart';
+import 'core/theme/theme_controller.dart';
+import 'features/onboarding/data/onboarding_storage.dart';
 import 'features/auth/data/datasources/auth_local_datasource.dart';
 import 'features/auth/data/datasources/auth_remote_datasource.dart';
 import 'features/auth/data/repositories/auth_repository_impl.dart';
@@ -12,6 +14,7 @@ import 'features/auth/domain/usecases/sign_in_usecase.dart';
 import 'features/auth/domain/usecases/sign_up_usecase.dart';
 import 'features/auth/domain/usecases/verify_email_usecase.dart';
 import 'features/auth/presentation/bloc/auth_bloc.dart';
+import 'features/home/data/datasources/videos_remote_datasource.dart';
 import 'features/profile/presentation/cubit/profile_cubit.dart';
 
 final GetIt sl = GetIt.instance;
@@ -21,6 +24,9 @@ Future<void> initDependencies() async {
   sl.registerLazySingleton<AuthLocalDataSource>(
     () => AuthLocalDataSourceImpl(),
   );
+
+  sl.registerLazySingleton(() => ThemeController());
+  sl.registerLazySingleton(() => OnboardingStorage());
 
   // Network
   sl.registerLazySingleton<DioClient>(
@@ -41,6 +47,11 @@ Future<void> initDependencies() async {
   // auth
   sl.registerLazySingleton(() => GetCurrentUserUseCase(sl<AuthRepository>()));
   sl.registerFactory(() => ProfileCubit(getCurrentUserUseCase: sl()));
+
+  // home
+  sl.registerLazySingleton<VideosRemoteDataSource>(
+    () => VideosRemoteDataSourceImpl(sl<DioClient>()),
+  );
 
   // Usecases
   sl.registerLazySingleton(() => SignInUseCase(sl<AuthRepository>()));

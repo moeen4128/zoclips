@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_neutral_colors.dart';
 import '../../../../core/utils/responsive.dart';
 import '../../../../core/widgets/app_bottom_nav_bar.dart';
 import '../../../../core/widgets/app_navigation_rail.dart';
@@ -29,7 +29,7 @@ class MainShellPage extends StatelessWidget {
     // Phones and folded/cover-screen foldables: bottom tab bar.
     if (context.isCompact) {
       return Scaffold(
-        backgroundColor: AppColors.background,
+        backgroundColor: context.neutrals.background,
         extendBody: true,
         body: navigationShell,
         bottomNavigationBar: AppBottomNavBar(
@@ -41,7 +41,7 @@ class MainShellPage extends StatelessWidget {
 
     // Tablets, unfolded foldables, iPad and desktop-class widths: side rail.
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: context.neutrals.background,
       body: Row(
         children: [
           AppNavigationRail(

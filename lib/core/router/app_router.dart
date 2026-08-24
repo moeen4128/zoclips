@@ -1,5 +1,7 @@
 import 'package:go_router/go_router.dart';
+import '../../features/onboarding/presentation/pages/onboarding_page.dart';
 import '../../features/settings/presentation/pages/settings_page.dart';
+import '../../features/splash/presentation/pages/animated_splash_page.dart';
 import 'route_names.dart';
 import '../../features/auth/presentation/pages/signin_page.dart';
 import '../../features/auth/presentation/pages/signup_page.dart';
@@ -17,8 +19,18 @@ class AppRouter {
 
   static final GoRouter router = GoRouter(
     debugLogDiagnostics: true,
-    initialLocation: RoutePaths.signIn,
+    initialLocation: RoutePaths.splash,
     routes: [
+      GoRoute(
+        path: RoutePaths.splash,
+        name: RouteNames.splash,
+        builder: (context, state) => const AnimatedSplashPage(),
+      ),
+      GoRoute(
+        path: RoutePaths.onboarding,
+        name: RouteNames.onboarding,
+        builder: (context, state) => const OnboardingPage(),
+      ),
       GoRoute(
         path: RoutePaths.signIn,
         name: RouteNames.signIn,

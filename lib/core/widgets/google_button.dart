@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../constants/app_sizes.dart';
-import '../theme/app_colors.dart';
+import '../theme/app_neutral_colors.dart';
 
 class GoogleButton extends StatelessWidget {
   final VoidCallback onPressed;
@@ -8,26 +8,30 @@ class GoogleButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final neutrals = context.neutrals;
     return SizedBox(
       height: AppSizes.buttonHeight,
       width: double.infinity,
       child: OutlinedButton.icon(
         onPressed: onPressed,
         style: OutlinedButton.styleFrom(
-          backgroundColor: AppColors.cardBackground,
-          side: const BorderSide(color: AppColors.cardBorder),
+          backgroundColor: neutrals.cardBackground,
+          side: BorderSide(color: neutrals.cardBorder),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppSizes.radiusPill),
           ),
         ),
-        icon: const Icon(
+        icon: Icon(
           Icons.g_mobiledata,
           size: 22,
-          color: Colors.white,
+          color: neutrals.textPrimary,
         ), // swap for a real Google asset later
-        label: const Text(
+        label: Text(
           'Google',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+          style: TextStyle(
+            color: neutrals.textPrimary,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
     );

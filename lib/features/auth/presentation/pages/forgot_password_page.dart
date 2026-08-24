@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/constants/app_strings.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_neutral_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/utils/validators.dart';
 import '../../../../core/widgets/app_logo_badge.dart';
@@ -54,6 +54,7 @@ class _ForgotPasswordViewState extends State<_ForgotPasswordView> {
 
   @override
   Widget build(BuildContext context) {
+    final neutrals = context.neutrals;
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state.status == AuthStatus.failure) {
@@ -70,9 +71,9 @@ class _ForgotPasswordViewState extends State<_ForgotPasswordView> {
         child: Container(
           padding: const EdgeInsets.all(AppSizes.xl),
           decoration: BoxDecoration(
-            color: AppColors.cardBackground,
+            color: neutrals.cardBackground,
             borderRadius: BorderRadius.circular(AppSizes.radiusLg),
-            border: Border.all(color: AppColors.cardBorder),
+            border: Border.all(color: neutrals.cardBorder),
           ),
           child: Form(
             key: _formKey,
@@ -83,12 +84,12 @@ class _ForgotPasswordViewState extends State<_ForgotPasswordView> {
                 const SizedBox(height: AppSizes.lg),
                 Text(
                   AppStrings.forgotPasswordTitle,
-                  style: AppTextStyles.heading,
+                  style: AppTextStyles.heading(neutrals),
                 ),
                 const SizedBox(height: AppSizes.xs),
                 Text(
                   AppStrings.forgotPasswordSubtitle,
-                  style: AppTextStyles.subtitle,
+                  style: AppTextStyles.subtitle(neutrals),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: AppSizes.xl),
@@ -115,15 +116,15 @@ class _ForgotPasswordViewState extends State<_ForgotPasswordView> {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.arrow_back,
                         size: AppSizes.iconSm,
-                        color: AppColors.textSecondary,
+                        color: neutrals.textSecondary,
                       ),
                       const SizedBox(width: AppSizes.xs),
                       Text(
                         AppStrings.backToSignIn,
-                        style: AppTextStyles.subtitle,
+                        style: AppTextStyles.subtitle(neutrals),
                       ),
                     ],
                   ),
