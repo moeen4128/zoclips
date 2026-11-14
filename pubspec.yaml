@@ -43,6 +43,12 @@ dependencies:
   bloc_test: ^10.0.0
   mocktail: ^1.0.5
   flutter_secure_storage: ^10.3.1
+  shimmer: ^3.0.0
+  video_player: ^2.14.0
+  chewie: ^1.17.2
+  gal: ^2.3.3
+  url_launcher: ^6.3.2
+  image_picker: ^1.1.2
 
 dev_dependencies:
   flutter_test:

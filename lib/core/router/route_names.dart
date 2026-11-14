@@ -9,12 +9,11 @@ class RouteNames {
   static const String verifyEmail = 'verify-email';
   static const String emailVerifiedResult = 'email-verified-result';
   static const String settings = 'settings';
-
-  // Bottom nav tabs
   static const String home = 'home';
-  static const String assets = 'assets';
-  static const String calendar = 'calendar';
-  static const String profile = 'profile';
+  static const String clips = 'clips';
+  static const String clipDetail = 'clip-detail';
+  static const String createClips = 'create-clips';
+  static const String brollTemplate = 'broll-template';
 }
 
 class RoutePaths {
@@ -28,9 +27,9 @@ class RoutePaths {
   static const String verifyEmail = '/verify-email';
   static const String emailVerifiedResult = '/verify-result';
   static const String settings = '/settings';
-
   static const String home = '/home';
-  static const String assets = '/assets';
-  static const String calendar = '/calendar';
-  static const String profile = '/profile';
+  static const String clips = '/videos/:videoId/clips';
+  static const String clipDetail = '/videos/:videoId/clips/:clipId';
+  static const String createClips = '/create-clips';
+  static const String brollTemplate = '/broll-template';
 }

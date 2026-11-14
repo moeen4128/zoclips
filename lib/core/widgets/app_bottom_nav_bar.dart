@@ -63,19 +63,6 @@ class AppBottomNavBar extends StatelessWidget {
           border: Border.all(
             color: AppColors.accentGreen.withValues(alpha: 0.5),
           ),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.glowGreen.withValues(alpha: 0.35),
-              blurRadius: 24,
-              spreadRadius: 1,
-              offset: const Offset(0, 6),
-            ),
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.4),
-              blurRadius: 16,
-              offset: const Offset(0, 8),
-            ),
-          ],
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,

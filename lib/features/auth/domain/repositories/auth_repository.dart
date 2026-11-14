@@ -25,7 +25,12 @@ abstract class AuthRepository {
     required String password,
   });
 
-  Future<Either<Failure, UserEntity>> getCurrentUser();
+  /// Serves the locally cached user when available so screens that show
+  /// profile data (Settings, the Profile tab) don't hit the network every
+  /// time they're opened. Pass [forceRefresh] to bypass the cache.
+  Future<Either<Failure, UserEntity>> getCurrentUser({
+    bool forceRefresh = false,
+  });
 
   String buildGoogleLoginUrl();
 }

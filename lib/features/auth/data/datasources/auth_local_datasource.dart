@@ -9,7 +9,16 @@ abstract class AuthLocalDataSource {
     required UserModel user,
   });
   Future<String?> getToken();
+  Future<String?> getRefreshToken();
   Future<UserModel?> getCachedUser();
+  Future<void> cacheUser(UserModel user);
+
+  /// Persists a refreshed access/refresh token pair without touching the
+  /// cached user — used after a silent token refresh.
+  Future<void> updateTokens({
+    required String accessToken,
+    String? refreshToken,
+  });
   Future<void> clearSession();
 }
 
@@ -43,10 +52,29 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
   Future<String?> getToken() => _storage.read(key: _tokenKey);
 
   @override
+  Future<String?> getRefreshToken() => _storage.read(key: _refreshTokenKey);
+
+  @override
   Future<UserModel?> getCachedUser() async {
     final raw = await _storage.read(key: _userKey);
     if (raw == null) return null;
     return UserModel.fromJson(jsonDecode(raw) as Map<String, dynamic>);
+  }
+
+  @override
+  Future<void> cacheUser(UserModel user) async {
+    await _storage.write(key: _userKey, value: jsonEncode(user.toJson()));
+  }
+
+  @override
+  Future<void> updateTokens({
+    required String accessToken,
+    String? refreshToken,
+  }) async {
+    await _storage.write(key: _tokenKey, value: accessToken);
+    if (refreshToken != null) {
+      await _storage.write(key: _refreshTokenKey, value: refreshToken);
+    }
   }
 
   @override

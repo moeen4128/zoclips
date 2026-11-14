@@ -2,13 +2,16 @@ import 'dart:async';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/constants/app_sizes.dart';
 import '../../../../core/error/exceptions.dart';
+import '../../../../core/router/route_names.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_neutral_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/widgets/app_snackbar.dart';
 import '../../../../injection_container.dart';
+import '../../../create_clips/presentation/pages/create_clips_args.dart';
 import '../../data/datasources/videos_remote_datasource.dart';
 
 const double _cardRadius = AppSizes.radiusLg + 8;
@@ -39,9 +42,17 @@ class _OneClickAiMagicCardState extends State<OneClickAiMagicCard> {
 
     setState(() => _isLoading = true);
     try {
-      await sl<VideosRemoteDataSource>().fetchMetadata(url: url);
+      final metadata = await sl<VideosRemoteDataSource>().fetchMetadata(
+        url: url,
+      );
       if (!mounted) return;
-      AppSnackbar.success(context, 'API is working — metadata request succeeded');
+      await context.pushNamed(
+        RouteNames.createClips,
+        extra: CreateClipsArgs(videoSource: metadata, sourceUrl: url),
+      );
+      // Back from Create Clips (e.g. via "Change Video") — clear the link
+      // so the field doesn't still show the previous paste.
+      if (mounted) _urlController.clear();
     } on ServerException catch (e) {
       if (!mounted) return;
       AppSnackbar.error(context, e.message);
@@ -73,7 +84,9 @@ class _OneClickAiMagicCardState extends State<OneClickAiMagicCard> {
           border: Border.all(color: neutrals.cardBorder),
           boxShadow: [
             BoxShadow(
-              color: AppColors.glowGreen.withValues(alpha: neutrals.glowOpacity),
+              color: AppColors.glowGreen.withValues(
+                alpha: neutrals.glowOpacity,
+              ),
               blurRadius: 40,
               spreadRadius: 2,
             ),
@@ -113,7 +126,10 @@ class _OneClickAiMagicCardState extends State<OneClickAiMagicCard> {
               ],
             ),
             const SizedBox(height: AppSizes.lg),
-            _GetClipsButton(isLoading: _isLoading, onTap: _isLoading ? null : _submit),
+            _GetClipsButton(
+              isLoading: _isLoading,
+              onTap: _isLoading ? null : _submit,
+            ),
           ],
         ),
       ),
@@ -130,7 +146,13 @@ class _LinkInputField extends StatefulWidget {
 }
 
 class _LinkInputFieldState extends State<_LinkInputField> {
-  static const _placeholders = ['TikTok', 'Vimeo', 'YouTube', 'Facebook', 'Pinterest'];
+  static const _placeholders = [
+    'TikTok',
+    'Vimeo',
+    'YouTube',
+    'Facebook',
+    'Pinterest',
+  ];
 
   late final Timer _timer;
   int _hintIndex = 0;
@@ -170,7 +192,11 @@ class _LinkInputFieldState extends State<_LinkInputField> {
       ),
       child: Row(
         children: [
-          Icon(Icons.link, size: AppSizes.iconMd, color: neutrals.textSecondary),
+          Icon(
+            Icons.link,
+            size: AppSizes.iconMd,
+            color: neutrals.textSecondary,
+          ),
           const SizedBox(width: AppSizes.sm),
           Expanded(
             child: Stack(
@@ -181,7 +207,10 @@ class _LinkInputFieldState extends State<_LinkInputField> {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text('Drop a ', style: AppTextStyles.hintText(neutrals)),
+                        Text(
+                          'Drop a ',
+                          style: AppTextStyles.hintText(neutrals),
+                        ),
                         AnimatedSwitcher(
                           duration: const Duration(milliseconds: 350),
                           child: Text(
@@ -432,7 +461,8 @@ class _PulsingBorderPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round;
 
     for (var i = 0; i < segments; i++) {
-      final segStart = (progress * length + i * (tailLength / segments)) % length;
+      final segStart =
+          (progress * length + i * (tailLength / segments)) % length;
       final segLen = tailLength / segments;
       paint.color = color.withValues(alpha: (i / segments) * 0.9);
       canvas.drawPath(_extractWrapped(metric, segStart, segLen), paint);

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 /// Surface/text colors that flip between light and dark theme. Brand colors
 /// (green accents, error red) stay constant across both — see [AppColors].
@@ -112,4 +113,29 @@ class AppNeutralColors extends ThemeExtension<AppNeutralColors> {
 extension AppNeutralColorsContext on BuildContext {
   AppNeutralColors get neutrals =>
       Theme.of(this).extension<AppNeutralColors>()!;
+
+  /// Status bar style matching the current theme — icon brightness *and* an
+  /// explicit `statusBarColor` painted the same as the app's background.
+  /// Leaving `statusBarColor` transparent lets some OEM skins (Samsung,
+  /// MIUI, …) draw their own dim scrim behind it for legibility, which
+  /// shows up as a strip that doesn't match the app's actual background;
+  /// painting it ourselves removes that mismatch. Pass this to
+  /// `AppBar.systemOverlayStyle` explicitly on any AppBar that isn't fully
+  /// opaque.
+  SystemUiOverlayStyle get statusBarIconStyle {
+    final isDark = Theme.of(this).brightness == Brightness.dark;
+    return SystemUiOverlayStyle(
+      statusBarColor: neutrals.background,
+      statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
+      statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
+      // Same reasoning for the Android system nav bar: left unset, many
+      // skins paint it white, which shows up as a white strip under our
+      // floating bottom nav pill.
+      systemNavigationBarColor: neutrals.background,
+      systemNavigationBarDividerColor: Colors.transparent,
+      systemNavigationBarIconBrightness: isDark
+          ? Brightness.light
+          : Brightness.dark,
+    );
+  }
 }

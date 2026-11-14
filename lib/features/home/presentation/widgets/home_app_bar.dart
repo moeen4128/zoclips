@@ -19,6 +19,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: neutrals.background,
       surfaceTintColor: Colors.transparent,
       elevation: 0,
+      systemOverlayStyle: context.statusBarIconStyle,
       titleSpacing: AppSizes.lg,
       title: Row(
         mainAxisSize: MainAxisSize.min,
@@ -32,14 +33,19 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
           const SizedBox(width: AppSizes.sm),
           Text(
             AppStrings.appName,
-            style: AppTextStyles.heading(neutrals).copyWith(fontSize: AppSizes.fontLg),
+            style: AppTextStyles.heading(
+              neutrals,
+            ).copyWith(fontSize: AppSizes.fontLg),
           ),
         ],
       ),
       actions: [
         const _ThemeToggleButton(),
         IconButton(
-          icon: Icon(Icons.notifications_none_rounded, color: neutrals.textPrimary),
+          icon: Icon(
+            Icons.notifications_none_rounded,
+            color: neutrals.textPrimary,
+          ),
           onPressed: () {}, // design only — notifications wired up later
         ),
         const SizedBox(width: AppSizes.sm),

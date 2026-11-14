@@ -58,9 +58,16 @@ class AuthRepositoryImpl implements AuthRepository {
   String buildGoogleLoginUrl() =>
       '${ApiConstants.baseUrl}${ApiConstants.googleLogin}';
   @override
-  Future<Either<Failure, UserEntity>> getCurrentUser() async {
+  Future<Either<Failure, UserEntity>> getCurrentUser({
+    bool forceRefresh = false,
+  }) async {
+    if (!forceRefresh) {
+      final cached = await localDataSource.getCachedUser();
+      if (cached != null) return Right(cached);
+    }
     try {
       final user = await remoteDataSource.getCurrentUser();
+      await localDataSource.cacheUser(user);
       return Right(user);
     } catch (e) {
       return Left(_mapException(e));

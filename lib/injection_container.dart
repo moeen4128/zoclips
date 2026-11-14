@@ -14,7 +14,18 @@ import 'features/auth/domain/usecases/sign_in_usecase.dart';
 import 'features/auth/domain/usecases/sign_up_usecase.dart';
 import 'features/auth/domain/usecases/verify_email_usecase.dart';
 import 'features/auth/presentation/bloc/auth_bloc.dart';
+import 'features/assets/data/datasources/assets_remote_datasource.dart';
+import 'features/assets/presentation/cubit/assets_cubit.dart';
+import 'features/broll/data/datasources/broll_remote_datasource.dart';
+import 'features/broll/presentation/cubit/broll_template_cubit.dart';
+import 'features/calendar/data/datasources/calendar_remote_datasource.dart';
+import 'features/clips/data/datasources/clips_remote_datasource.dart';
+import 'features/clips/presentation/cubit/clip_detail_cubit.dart';
+import 'features/clips/presentation/cubit/clips_cubit.dart';
+import 'features/create_clips/data/datasources/create_clips_remote_datasource.dart';
+import 'features/create_clips/presentation/cubit/create_clips_cubit.dart';
 import 'features/home/data/datasources/videos_remote_datasource.dart';
+import 'features/home/presentation/cubit/videos_cubit.dart';
 import 'features/profile/presentation/cubit/profile_cubit.dart';
 
 final GetIt sl = GetIt.instance;
@@ -30,7 +41,16 @@ Future<void> initDependencies() async {
 
   // Network
   sl.registerLazySingleton<DioClient>(
-    () => DioClient(getToken: () => sl<AuthLocalDataSource>().getToken()),
+    () => DioClient(
+      getToken: () => sl<AuthLocalDataSource>().getToken(),
+      getRefreshToken: () => sl<AuthLocalDataSource>().getRefreshToken(),
+      onTokensRefreshed: (accessToken, refreshToken) =>
+          sl<AuthLocalDataSource>().updateTokens(
+            accessToken: accessToken,
+            refreshToken: refreshToken,
+          ),
+      onRefreshFailed: () => sl<AuthLocalDataSource>().clearSession(),
+    ),
   );
 
   // Data
@@ -51,6 +71,37 @@ Future<void> initDependencies() async {
   // home
   sl.registerLazySingleton<VideosRemoteDataSource>(
     () => VideosRemoteDataSourceImpl(sl<DioClient>()),
+  );
+  sl.registerFactory(() => VideosCubit(sl<VideosRemoteDataSource>()));
+
+  // clips
+  sl.registerLazySingleton<ClipsRemoteDataSource>(
+    () => ClipsRemoteDataSourceImpl(sl<DioClient>()),
+  );
+  sl.registerFactory(() => ClipsCubit(sl<ClipsRemoteDataSource>()));
+  sl.registerFactory(() => ClipDetailCubit(sl<ClipsRemoteDataSource>()));
+
+  // assets
+  sl.registerLazySingleton<AssetsRemoteDataSource>(
+    () => AssetsRemoteDataSourceImpl(sl<DioClient>()),
+  );
+  sl.registerFactory(() => AssetsCubit(sl<AssetsRemoteDataSource>()));
+
+  // create clips
+  sl.registerLazySingleton<CreateClipsRemoteDataSource>(
+    () => CreateClipsRemoteDataSourceImpl(sl<DioClient>()),
+  );
+  sl.registerFactory(() => CreateClipsCubit(sl<CreateClipsRemoteDataSource>()));
+
+  // broll template
+  sl.registerLazySingleton<BrollRemoteDataSource>(
+    () => BrollRemoteDataSourceImpl(sl<DioClient>()),
+  );
+  sl.registerFactory(() => BrollTemplateCubit(sl<BrollRemoteDataSource>()));
+
+  // calendar
+  sl.registerLazySingleton<CalendarRemoteDataSource>(
+    () => CalendarRemoteDataSourceImpl(sl<DioClient>()),
   );
 
   // Usecases

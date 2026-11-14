@@ -17,7 +17,8 @@ Future<void> _pump(WidgetTester tester) async {
               mainAxisSize: MainAxisSize.min,
               children: [
                 ElevatedButton(
-                  onPressed: () => AppSnackbar.success(context, 'Saved successfully'),
+                  onPressed: () =>
+                      AppSnackbar.success(context, 'Saved successfully'),
                   child: const Text('show'),
                 ),
                 ElevatedButton(
@@ -59,7 +60,9 @@ void main() {
     expect(find.text('Saved successfully'), findsNothing);
   });
 
-  testWidgets('tapping the close icon dismisses it immediately', (tester) async {
+  testWidgets('tapping the close icon dismisses it immediately', (
+    tester,
+  ) async {
     await _pump(tester);
 
     await tester.tap(find.text('show'));

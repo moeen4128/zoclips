@@ -7,21 +7,35 @@ import '../error/exceptions.dart';
 class DioClient {
   final Dio dio;
   final Future<String?> Function() getToken;
+  final Future<String?> Function() getRefreshToken;
+  final Future<void> Function(String accessToken, String? refreshToken)
+  onTokensRefreshed;
+  final Future<void> Function() onRefreshFailed;
 
-  DioClient({required this.getToken})
-    : dio = Dio(
-        BaseOptions(
-          baseUrl: ApiConstants.baseUrl,
-          connectTimeout: const Duration(
-            milliseconds: ApiConstants.connectTimeoutMs,
-          ),
-          receiveTimeout: const Duration(
-            milliseconds: ApiConstants.receiveTimeoutMs,
-          ),
-          sendTimeout: const Duration(milliseconds: ApiConstants.sendTimeoutMs),
-          headers: {'Content-Type': ApiConstants.contentType},
-        ),
-      ) {
+  /// Dedupes concurrent 401s during the same refresh — without this, N
+  /// requests failing at once would each fire their own refresh call.
+  Future<String?>? _refreshing;
+
+  DioClient({
+    required this.getToken,
+    required this.getRefreshToken,
+    required this.onTokensRefreshed,
+    required this.onRefreshFailed,
+  }) : dio = Dio(
+         BaseOptions(
+           baseUrl: ApiConstants.baseUrl,
+           connectTimeout: const Duration(
+             milliseconds: ApiConstants.connectTimeoutMs,
+           ),
+           receiveTimeout: const Duration(
+             milliseconds: ApiConstants.receiveTimeoutMs,
+           ),
+           sendTimeout: const Duration(
+             milliseconds: ApiConstants.sendTimeoutMs,
+           ),
+           headers: {'Content-Type': ApiConstants.contentType},
+         ),
+       ) {
     dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
@@ -32,7 +46,24 @@ class DioClient {
           }
           handler.next(options);
         },
-        onError: (DioException e, handler) {
+        onError: (DioException e, handler) async {
+          final isRefreshCall =
+              e.requestOptions.path == ApiConstants.refreshToken;
+          if (e.response?.statusCode == 401 && !isRefreshCall) {
+            final newToken = await _refreshAccessToken();
+            if (newToken != null) {
+              try {
+                final options = e.requestOptions;
+                options.headers[ApiConstants.authorizationHeader] =
+                    '${ApiConstants.bearerPrefix} $newToken';
+                final retryResponse = await dio.fetch(options);
+                return handler.resolve(retryResponse);
+              } on DioException {
+                // Retry failed for its own reason — fall through and
+                // surface the original 401 below.
+              }
+            }
+          }
           handler.next(e);
         },
       ),
@@ -42,6 +73,37 @@ class DioClient {
     dio.interceptors.add(
       LogInterceptor(requestBody: true, responseBody: true, error: true),
     );
+  }
+
+  Future<String?> _refreshAccessToken() {
+    return _refreshing ??= _performRefresh().whenComplete(() {
+      _refreshing = null;
+    });
+  }
+
+  Future<String?> _performRefresh() async {
+    final refreshToken = await getRefreshToken();
+    if (refreshToken == null || refreshToken.isEmpty) {
+      await onRefreshFailed();
+      return null;
+    }
+    try {
+      final response = await dio.post(
+        ApiConstants.refreshToken,
+        data: {'refresh_token': refreshToken},
+      );
+      final data = response.data as Map<String, dynamic>;
+      final newAccessToken = data['access_token'] as String?;
+      if (newAccessToken == null || newAccessToken.isEmpty) {
+        await onRefreshFailed();
+        return null;
+      }
+      await onTokensRefreshed(newAccessToken, data['refresh_token'] as String?);
+      return newAccessToken;
+    } on DioException {
+      await onRefreshFailed();
+      return null;
+    }
   }
 
   Future<Response> post(
@@ -56,6 +118,26 @@ class DioClient {
 
   Future<Response> get(String path, {Map<String, dynamic>? queryParameters}) {
     return _guard(() => dio.get(path, queryParameters: queryParameters));
+  }
+
+  Future<Response> patch(
+    String path, {
+    dynamic data,
+    Map<String, dynamic>? queryParameters,
+  }) {
+    return _guard(
+      () => dio.patch(path, data: data, queryParameters: queryParameters),
+    );
+  }
+
+  Future<Response> delete(
+    String path, {
+    dynamic data,
+    Map<String, dynamic>? queryParameters,
+  }) {
+    return _guard(
+      () => dio.delete(path, data: data, queryParameters: queryParameters),
+    );
   }
 
   Future<Response> _guard(Future<Response> Function() call) async {

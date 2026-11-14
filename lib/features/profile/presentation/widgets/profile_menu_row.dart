@@ -34,10 +34,19 @@ class ProfileMenuRow extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  Icon(
-                    leadingIcon,
-                    size: AppSizes.iconMd,
-                    color: AppColors.accentGreen,
+                  Container(
+                    width: 36,
+                    height: 36,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: AppColors.accentGreen.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(AppSizes.radiusSm),
+                    ),
+                    child: Icon(
+                      leadingIcon,
+                      size: AppSizes.iconSm,
+                      color: AppColors.accentGreen,
+                    ),
                   ),
                   const SizedBox(width: AppSizes.md),
                   Expanded(

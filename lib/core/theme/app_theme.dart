@@ -34,6 +34,14 @@ class AppTheme {
               error: AppColors.error,
             ),
       extensions: [colors],
+      // M3 tints an AppBar with colorScheme.primary (our green) once content
+      // scrolls under it — kill that globally so every AppBar stays the page
+      // background color.
+      appBarTheme: AppBarTheme(
+        backgroundColor: colors.background,
+        surfaceTintColor: Colors.transparent,
+        scrolledUnderElevation: 0,
+      ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: colors.inputBackground,

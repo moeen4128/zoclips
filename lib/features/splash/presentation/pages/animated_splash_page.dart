@@ -5,9 +5,7 @@ import '../../../../core/constants/asset_constants.dart';
 import '../../../../core/router/route_names.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_neutral_colors.dart';
-import '../../../../core/usecase/usecase.dart';
 import '../../../../features/auth/data/datasources/auth_local_datasource.dart';
-import '../../../../features/auth/domain/usecases/get_current_user_usecase.dart';
 import '../../../../features/onboarding/data/onboarding_storage.dart';
 import '../../../../injection_container.dart';
 
@@ -51,18 +49,21 @@ class _AnimatedSplashPageState extends State<AnimatedSplashPage>
     await Future.delayed(const Duration(milliseconds: 550));
     if (!mounted) return;
 
+    // Trust the cached token directly — no network round-trip here. A splash
+    // that gates navigation on a live "get current user" call bounces a
+    // genuinely logged-in user back to sign-in the moment the network is
+    // slow, offline, or the backend hiccups, even though nothing about their
+    // session actually changed. If a token is expired/invalid, the screens
+    // that hit the API (Home, Settings, etc.) already surface that via their
+    // own error states instead.
     final token = await sl<AuthLocalDataSource>().getToken();
+    if (!mounted) return;
     if (token != null && token.isNotEmpty) {
-      final result = await sl<GetCurrentUserUseCase>().call(const NoParams());
-      if (!mounted) return;
-      if (result.isRight()) {
-        context.goNamed(RouteNames.home);
-        return;
-      }
+      context.goNamed(RouteNames.home);
+      return;
     }
 
     final hasSeenOnboarding = sl<OnboardingStorage>().hasSeenOnboarding;
-    if (!mounted) return;
     context.goNamed(
       hasSeenOnboarding ? RouteNames.signIn : RouteNames.onboarding,
     );
